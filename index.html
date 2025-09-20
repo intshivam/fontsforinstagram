@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fonts for Instagram</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- blurred floating background shapes -->
+  <div class="bgOrbs" aria-hidden="true">
+    <span class="orb o1"></span><span class="orb o2"></span><span class="orb o3"></span><span class="orb o4"></span>
+    <span class="orb o5"></span><span class="orb o6"></span><span class="orb o7"></span><span class="orb o8"></span>
+  </div>
+
+  <!-- SINGLE blurred container: title + chips -->
+  <header>
+    <!-- REPLACED OLD LOGO WITH SVG -->
+    <svg class="logo" width="28" height="28" viewBox="0 0 28 28"
+      xmlns="http://www.w3.org/2000/svg" role="img" aria-label="NickFinder pixel monster camera">
+      <defs>
+        <!-- Instagram-style gradient -->
+        <linearGradient id="igcam" x1="0" y1="1" x2="1" y2="0">
+          <stop offset="0%"  stop-color="#f58529"/>
+          <stop offset="25%" stop-color="#dd2a7b"/>
+          <stop offset="50%" stop-color="#8134af"/>
+          <stop offset="75%" stop-color="#515bd4"/>
+          <stop offset="100%" stop-color="#29d3f8"/>
+        </linearGradient>
+
+        <!-- Soft neon glow -->
+        <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="1.4" result="b"/>
+          <feMerge>
+            <feMergeNode in="b"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+      </defs>
+
+      <style>
+        :root { shape-rendering: geometricPrecision; }
+
+        /* Idle: gentle breathing of the lens */
+        .lensPulse {
+          transform-box: fill-box;
+          transform-origin: 14px 14px;
+          animation: breathe 3s ease-in-out infinite;
+          filter: url(#glow);
+        }
+
+        /* Hover: double-blink + a slightly stronger pulse */
+        .logo:hover .eye {
+          animation: blink 0.34s steps(1, end) 2; /* two quick blinks */
+        }
+        .logo:hover .lensPulse {
+          animation: pulse 0.85s ease-in-out 1, breathe 3s ease-in-out infinite 0.85s;
+        }
+
+        /* Keyframes */
+        @keyframes breathe {
+          0%, 100% { transform: scale(1);   opacity: 1;   }
+          50%      { transform: scale(1.04); opacity: 0.96; }
+        }
+        @keyframes pulse {
+          0%   { transform: scale(1);   opacity: 1;    }
+          50%  { transform: scale(1.07); opacity: 0.9;  }
+          100% { transform: scale(1);   opacity: 1;    }
+        }
+        @keyframes blink {
+          0%   { transform: scaleY(1);   }
+          45%  { transform: scaleY(0.12); }
+          55%  { transform: scaleY(0.12); }
+          100% { transform: scaleY(1);   }
+        }
+
+        .eye { transform-box: fill-box; transform-origin: center; }
+
+        /* Respect reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+          .lensPulse { animation: none !important; filter: none !important; }
+          .logo:hover .eye { animation: none !important; }
+        }
+      </style>
+
+      <!-- Camera body -->
+      <rect x="1" y="1" width="26" height="26" rx="8" fill="url(#igcam)"/>
+
+      <!-- Lens ring + animated pulse target -->
+      <g class="lensPulse">
+        <circle cx="14" cy="14" r="7.2" fill="#0b0f1a" stroke="white" stroke-width="1.2"/>
+      </g>
+
+      <!-- Pixel monster inside lens -->
+      <g fill="white">
+        <!-- eyes (hover double-blink) -->
+        <rect class="eye" x="11" y="12" width="2" height="2" rx="0.4"/>
+        <rect class="eye" x="15" y="12" width="2" height="2" rx="0.4"/>
+        <!-- head/body -->
+        <rect x="10" y="14" width="8"  height="2"/>
+        <rect x="9"  y="16" width="10" height="2"/>
+        <rect x="11" y="18" width="2"  height="2"/>
+        <rect x="15" y="18" width="2"  height="2"/>
+      </g>
+
+      <!-- flash dot -->
+      <circle cx="20" cy="8" r="1.5" fill="white" opacity="0.92"/>
+    </svg>
+
+    <h1>Fonts for Instagram</h1>
+    <div id="catBar" class="chipBar" role="tablist" aria-label="Style categories"></div>
+  </header>
+
+  <div class="content">
+    <div id="styles" class="stylesList"></div>
+    <div id="sentinel" style="height:1px"></div>
+  </div>
+
+  <div class="dockWrap">
+    <div class="bottomBlur" aria-hidden="true"></div>
+    <div class="dock" id="dock">
+      <input id="source" type="text" placeholder="Type here or use the mic…" />
+      <button class="iconBtn" id="micBtn" title="Start dictation" aria-pressed="false" aria-live="polite">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v5a3 3 0 0 0 3 3zm-7-3h2a5 5 0 0 0 10 0h2a7 7 0 0 1-6 6.92V21h-2v-3.08A7 7 0 0 1 5 11z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Custom Style Builder Overlay -->
+  <div id="styleBuilderOverlay" aria-hidden="true">
+    <div id="styleBuilderPanel" role="dialog" aria-modal="true" aria-labelledby="sbTitle">
+      <div class="sb-head">
+        <div class="sb-title" id="sbTitle">Build Your Own Custom Style</div>
+        <div class="sb-actions">
+          <!-- Save heart -->
+          <button id="saveCustomBtn" class="sb-iconBtn" title="Save to Favorites" aria-pressed="false" aria-label="Save custom design">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12.1 8.64l-.1.1-.1-.1C10.14 6.82 7.1 6.73 5.2 8.6c-1.99 1.97-1.99 5.17 0 7.14l5.96 5.89c.49.49 1.28.49 1.77 0L18.9 15.7c1.99-1.97 1.99-5.17 0-7.14-1.9-1.87-4.94-1.78-6.8.08z"/>
+            </svg>
+          </button>
+          <!-- Close -->
+          <button id="closeStyleBuilder" class="sb-iconBtn" title="Close builder" aria-label="Close">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.3 5.71L12 12.01l-6.29-6.3-1.42 1.42 6.3 6.29-6.3 6.29 1.42 1.42 6.29-6.3 6.29 6.3 1.42-1.42-6.3-6.29 6.3-6.29z" fill="currentColor"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="sb-body">
+        <div class="viewer">
+          <h3>Style viewer</h3>
+          <div id="viewerOut"></div>
+        </div>
+        <div class="pickers">
+          <div class="pickerGroup">
+            <h4>Base font style</h4>
+            <div class="selectRow">
+              <select id="baseStyleSelect" class="sb-select" aria-label="Base font style"></select>
+              <!-- --- NEW: horizontal live preview strip --- -->
+              <div id="baseStyleStrip"></div>
+            </div>
+          </div>
+          <div class="pickerGroup">
+            <h4>Decorative wrappers (categories)</h4>
+            <div id="wrapperCats" class="pillRow" role="listbox" aria-label="Wrapper categories"></div>
+          </div>
+          <div class="pickerGroup">
+            <h4>Wrapper variants</h4>
+            <div id="wrapperVariants" class="pillRow" role="listbox" aria-label="Wrapper variants"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="app.js"></script>
+</body>
+</html>
