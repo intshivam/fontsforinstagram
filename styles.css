@@ -1,656 +1,697 @@
 :root {
-    --bg: #0b0f14;
-    --pill: #2a2f36;
-    --pill-ring: #3a3f47;
-    --text: #e6edf3;
-    --muted: #9aa3ad;
-    --accent: #7dd3fc;
-    --glow: rgba(125, 211, 252, 0.4);
-    --success: #34d399;
-  }
-  
-  html, body { height: 100%; }
-  body {
-    margin: 0; height: 100vh; display: flex; flex-direction: column;
-    background: radial-gradient(1000px 700px at 80% -10%, #172133 0%, transparent 60%),
-                radial-gradient(800px 500px at -10% 10%, #162131 0%, transparent 60%),
-                var(--bg);
-    color: var(--text);
-    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-  }
-  
-  /* --- floating blurred background shapes --- */
-  .bgOrbs {
-    position: fixed;
-    inset: -10% -10% -10% -10%;
-    z-index: 0;
-    pointer-events: none;
-    filter: blur(52px) saturate(115%);
-    opacity: 0.9;
-  }
-  .bgOrbs .orb {
-    position: absolute;
-    border-radius: 40% 60% 60% 40% / 40% 35% 65% 60%;
-    will-change: transform;
-    mix-blend-mode: lighten;
-    background: radial-gradient(circle at 30% 30%, var(--c1), var(--c2) 60%, transparent 75%);
-    /* Faster, reliable motion */
-    animation: float var(--dur, 14s) ease-in-out infinite alternate both;
-    animation-delay: var(--delay, 0s);
-    transform-origin: center;
-    transform: translate3d(0,0,0) rotate(var(--rot, 0deg));
-    opacity: 0.85;
-  }
-  @keyframes float {
-    0%   { transform: translate3d(0, 0, 0) rotate(var(--rot, 0deg)); }
-    100% { transform: translate3d(var(--dx, 60px), var(--dy, -36px), 0) rotate(calc(var(--rot, 0deg) + 16deg)); }
-  }
-  
-  /* individual orb settings + slight staggered delays (shorter durations + larger travel = more visible motion) */
-  .bgOrbs .o1 { --size: 44vmin; width:var(--size); height:var(--size); top:-6vmin; left:-10vmin; --c1: rgba(125,211,252,.65); --c2: rgba(167,139,250,.35); --dx: 70px; --dy:-40px; --dur: 12s; --rot: 4deg;  --delay: 0s;   }
-  .bgOrbs .o2 { --size: 36vmin; width:var(--size); height:var(--size); top:8vh; right:8vw;  --c1: rgba(167,139,250,.6);  --c2: rgba(125,211,252,.3); --dx:-65px; --dy:50px; --dur: 13s; --rot: -6deg; --delay: .25s; }
-  .bgOrbs .o3 { --size: 30vmin; width:var(--size); height:var(--size); bottom:6vh; left:6vw; --c1: rgba(52,211,153,.55); --c2: rgba(125,211,252,.25); --dx: 55px; --dy:-44px; --dur: 14s; --rot: 8deg;  --delay: .5s; }
-  .bgOrbs .o4 { --size: 28vmin; width:var(--size); height:var(--size); bottom:-8vmin; right:25vw; --c1: rgba(22,33,49,.9); --c2: rgba(23,33,51,.6); --dx:-50px; --dy:56px; --dur: 15s; --rot: 3deg;  --delay: .8s; }
-  .bgOrbs .o5 { --size: 22vmin; width:var(--size); height:var(--size); top:20vh; left:35vw; --c1: rgba(125,211,252,.5); --c2: rgba(52,211,153,.25); --dx: 48px; --dy:36px; --dur: 11s; --rot: 10deg; --delay: .35s; }
-  .bgOrbs .o6 { --size: 26vmin; width:var(--size); height:var(--size); bottom:20vh; right:6vw; --c1: rgba(167,139,250,.55); --c2: rgba(23,33,51,.4); --dx:-44px; --dy:-38px; --dur: 13s; --rot: -12deg; --delay: .15s; }
-  .bgOrbs .o7 { --size: 18vmin; width:var(--size); height:var(--size); top:40vh; left:8vw; --c1: rgba(23,33,51,.7); --c2: rgba(125,211,252,.25); --dx: 36px; --dy:-32px; --dur: 10s; --rot: 6deg;  --delay: .6s; }
-  .bgOrbs .o8 { --size: 20vmin; width:var(--size); height:var(--size); top:6vh; right:40vw; --c1: rgba(52,211,153,.45); --c2: rgba(167,139,250,.25); --dx: -34px; --dy:28px; --dur: 12.5s; --rot: -8deg; --delay: .2s; }
-  
-  /* Respect users who reduce motion */
-  @media (prefers-reduced-motion: reduce) {
-    .bgOrbs .orb { animation: none; }
-  }
-  
-  /* SINGLE blurred container for header + chips */
-  header {
-    position: fixed;
-    left: 0; right: 0; top: 0;
-    z-index: 150;
-    padding: 16px 20px 10px;
-    display:flex; flex-direction: column; align-items:center; gap:10px;
-    background: transparent;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    -webkit-mask-image: linear-gradient(to bottom,
-      rgba(0,0,0,1) 0%,
-      rgba(0,0,0,0.95) 76%,
-      rgba(0,0,0,0) 100%);
-    mask-image: linear-gradient(to bottom,
-      rgba(0,0,0,1) 0%,
-      rgba(0,0,0,0.95) 76%,
-      rgba(0,0,0,0) 100%);
-  }
-  header.scrolled {
-    background: rgba(11,15,20,0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-  }
-  
-  .logo { width:45px; height:45px; border-radius:10px; }
-  h1 { font-size: 18px; margin:0; font-weight: 800; letter-spacing:.2px; opacity: 1; text-align:center; transition: opacity .2s ease; }
-  header.scrolled h1 { opacity: 1; }
-  
-  /* Push content below the taller fixed header (title + chips) */
-  .content { flex:1; min-height: 0; overflow: visible; padding: 140px 16px 200px; }
-  
-  /* CHIP BAR: single row, scrollable, full-width on all screens */
-  .chipBar {
-    align-self: stretch;
-    width: 100%;
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 8px;
-    align-items: center;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    padding: 6px 20px 8px;
-    margin: 0;
-    scrollbar-width: thin;
-    background: transparent;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    -webkit-mask-image: none;
-    mask-image: none;
-  }
-  .chipBar.scrolled { background: transparent; }
-  
-  .chipBar::-webkit-scrollbar { height: 6px; }
-  .chipBar::-webkit-scrollbar-thumb { background: rgba(255,255,255,.08); border-radius: 999px; }
-  
-  .chip {
-    flex: 0 0 auto;
-    padding: 8px 12px;
-    border-radius: 999px;
-    background: rgba(255,255,255,0.4);
-    color: #0a0f14;
-    mix-blend-mode: normal;
-    border: 1px solid rgba(255,255,255,0.55);
-    font-size: 13px; font-weight: 700; letter-spacing:.2px;
-    cursor: pointer; user-select: none;
-    transition: transform .06s ease, box-shadow .2s ease, background .2s ease, filter .2s ease;
-    white-space: nowrap;
-    position: relative;
-  }
-  .chip:hover { transform: translateY(-1px); box-shadow: 0 0 0 2px rgba(125,211,252,.45) inset, 0 0 12px var(--glow); }
-  .chip:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--accent), 0 0 14px var(--glow); }
-  .chip:active { transform: translateY(1px) scale(.98); }
-  .chip.active { box-shadow: 0 0 0 2px rgba(125,211,252,.45) inset, 0 0 18px var(--glow); }
-  
-  /* click pulse */
-  .chip.pulse::after {
-    content:""; position:absolute; inset:-3px; border-radius:999px; pointer-events:none;
-    animation: chipFlash .35s ease-out;
-  }
-  @keyframes chipFlash {
-    0%{ box-shadow:0 0 0 0 rgba(125,211,252,.45);}
-    100%{ box-shadow:0 0 0 14px rgba(125,211,252,0);}
-  }
-  
-  .stylesList { display:grid; grid-template-columns: 1fr; gap: 10px; margin-top: 16px; }
-  @media(min-width: 700px){ .stylesList { grid-template-columns: 1fr 1fr; } }
-  @media(min-width: 1024px){ .stylesList { grid-template-columns: 1fr 1fr 1fr; } }
-  
-  .card { background: #0f1620; border:1px solid #26303a; border-radius: 12px; padding: 12px; position:relative; overflow:hidden; }
-  .cardHead { display:flex; align-items:center; justify-content: space-between; gap:10px; position: relative; }
-  .styleName { font-weight:700; }
-  .outText { margin-top:6px; line-height:1.5; word-break: break-word; font-size: 16px; }
-  
-  /* Copy icon button */
-  .copyBtn { position: relative; width: 36px; height: 36px; border-radius: 10px; display:grid; place-items:center; background:#121923; border:1px solid #303844; cursor:pointer; transition: transform .08s ease, border-color .2s ease, background .2s ease; overflow:visible; z-index: 2; }
-  .copyBtn:hover { border-color: var(--accent); background:#0f1823; }
-  .copyBtn:active { transform: translateY(1px) scale(0.98); }
-  .copyBtn svg { width:18px; height:18px; fill:#c7cdd6; opacity:.95; transition: transform .2s ease, opacity .2s ease; }
-  .copyBtn .check { display:none; }
-  .copyBtn.copied { border-color: var(--success); background:#0f1e18; }
-  .copyBtn.copied .clip { display:none; }
-  .copyBtn.copied .check { display:block; fill: var(--success); }
-  .copyBtn.copied::after { content:""; position:absolute; inset:-6px; border-radius:12px; pointer-events:none; animation: burst .35s ease-out; }
-  @keyframes burst { 0%{ box-shadow:0 0 0 0 rgba(52,211,153,.45);} 100%{ box-shadow:0 0 0 16px rgba(52,211,153,0);} }
-  
-  /* Like button */
-  .likeBtn {
-    position: absolute;
-    top: 8px;
-    right: 48px;
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    display: grid;
-    place-items: center;
-    background: #121923;
-    border: 1px solid #303844;
-    cursor: pointer;
-    transition: transform .08s ease, border-color .2s ease, background .2s ease;
-    overflow: visible;
-    z-index: 2;
-  }
-  .likeBtn:hover { border-color: var(--accent); background:#0f1823; }
-  .likeBtn:active { transform: translateY(1px) scale(0.98); }
-  .likeBtn svg { width:18px; height:18px; }
-  .likeBtn svg path { fill: none; stroke: #c7cdd6; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: fill .2s ease, stroke .2s ease; }
-  .likeBtn.liked svg path { fill: #e63946; stroke: #e63946; }
-  .likeBtn.liked::after { content:""; position:absolute; inset:-6px; border-radius:12px; pointer-events:none; animation: burstRed .35s ease-out; }
-  @keyframes burstRed { 0%{ box-shadow:0 0 0 0 rgba(230,57,70,.45);} 100%{ box-shadow:0 0 0 16px rgba(230,57,70,0);} }
-  
-  .dockWrap {
-    position: fixed;
-    left: 0; right: 0; bottom: 0;
-    z-index: 200;
-    padding: 10px 0 20px;
-    display: flex;
-    justify-content: center;
-    background: transparent;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    -webkit-mask-image: none;
-    mask-image: none;
-  }
-  .bottomBlur {
-    position: fixed;
-    left: 0; right: 0; bottom: 0;
-    height: 35px;
-    z-index: 180;
-    pointer-events: none;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
-    mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
-    background: transparent;
-  }
-  .bottomBlur.scrolled {
-    background: linear-gradient(
-      to top,
-      rgba(11,15,20,0.85) 0%,
-      rgba(11,15,20,0.65) 60%,
-      rgba(11,15,20,0) 100%
-    );
-  }
-  .dockWrap.scrolled {
-    background: linear-gradient(to top,
-      rgba(11,15,20,0.85) 0%,
-      rgba(11,15,20,0.65) 60%,
-      rgba(11,15,20,0) 100%);
-  }
-  .dock {
-    pointer-events: auto;
-    width: 64%; max-width: 720px;
-    display:flex; align-items:center; gap: 10px;
-    background: var(--pill);
-    border: 1px solid var(--pill-ring);
-    border-radius: 999px;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
-    padding: 0 14px; height: 56px;
-    transition: box-shadow 0.2s ease, border-color 0.2s ease;
-  }
-  .dock { width: 64%; max-width: 720px; display:flex; align-items:center; gap: 10px; background: var(--pill); border: 1px solid var(--pill-ring); border-radius: 999px; box-shadow: inset 0 1px 0 rgba(255,255,255,.05); padding: 0 14px; height: 56px; transition: box-shadow 0.2s ease, border-color 0.2s ease; }
-  .dock:focus-within { border-color: var(--accent); box-shadow: 0 0 8px var(--glow); }
-  
-  .dock input { flex:1; background: transparent; border:0; outline:none; color:var(--text); font-size: 17px; line-height: 56px; }
-  .dock input::placeholder { color: var(--muted); opacity:.95; }
-  
-  .iconBtn { position: relative; width: 40px; height: 40px; border-radius: 999px; display:grid; place-items:center; background: #242830; border: 1px solid #3a3f47; cursor: pointer; flex-shrink: 0; }
-  .iconBtn svg { width:22px; height:22px; fill:#c7cdd6; opacity:.9; }
-  
-  .iconBtn.listening::before {
-    content: ""; position:absolute; inset:-5px; border-radius:999px; padding:3px;
-    background:
-      conic-gradient(var(--accent) 0deg 20deg, transparent 20deg 40deg,
-                     var(--accent) 40deg 60deg, transparent 60deg 80deg,
-                     var(--accent) 80deg 100deg, transparent 100deg 120deg,
-                     var(--accent) 120deg 140deg, transparent 140deg 160deg,
-                     var(--accent) 160deg 180deg, transparent 180deg 200deg,
-                     var(--accent) 200deg 220deg, transparent 220deg 240deg,
-                     var(--accent) 240deg 260deg, transparent 260deg 280deg,
-                     var(--accent) 280deg 300deg, transparent 300deg 320deg,
-                     var(--accent) 320deg 340deg, transparent 340deg 360deg);
-    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor; mask-composite: exclude;
-    animation: spin 2.5s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  
-  .dock.listening { box-shadow: 0 0 10px var(--glow), inset 0 1px 0 rgba(255,255,255,.05); }
-  .cardHead { display: none !important; }
-  .styleName { display: none !important; }
-  .copyBtn.topRight { position: absolute; top: 8px; right: 8px; }
-  
-  .stylesList { padding-bottom: 1x; }
-  #sentinel { height: 120px !important; }
-  
-  /* === Custom Style Builder (dialog) === */
-  #styleBuilderOverlay {
-    position: fixed;
-    inset: 0 0 80px 0; /* leave space for dock at bottom so input stays visible */
-    /* bottom set via JS to match dock height for consistency across breakpoints */
-    z-index: 190; /* under the dock (dock z-index is 200) */
-    display: none;
-    pointer-events: none;
-  }
-  
-  /* Overlay: stays hidden until opened, then can receive clicks */
-  #styleBuilderOverlay {
-    position: fixed;
-    inset: 0 0 80px 0;  /* JS already adjusts bottom to dock height */
-    z-index: 190;
-    display: none;
-    pointer-events: none;
-  }
-  #styleBuilderOverlay.open {
-    display: block;
-    pointer-events: auto;
-  }
-  
-  /* Panel starts off-screen using transform (not top) */
-  #styleBuilderPanel {
-    position: absolute;
-    left: 0; right: 0; top: 0;
-    height: 100%;
-    background: rgba(13,18,26,0.98);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border-bottom: 1px solid #26303a;
-    box-shadow: 0 16px 40px rgba(0,0,0,.55);
-    border-radius: 0 0 18px 18px;
-    display: grid;
-    grid-template-rows: auto 1fr;
-    overflow: hidden;
-  
-    /* key: start hidden above the viewport */
-    transform: translateY(-100%);
-    will-change: transform;
-  }
-  /* Bounce in/out only via transform */
-  @keyframes slideBounceDown {
-    0%   { transform: translateY(-100%); }
-    60%  { transform: translateY(12%); }
-    80%  { transform: translateY(-6%); }
-    100% { transform: translateY(0%); }
-  }
-  @keyframes slideBounceUp {
-    0%   { transform: translateY(0%); }
-    40%  { transform: translateY(-6%); }
-    100% { transform: translateY(-100%); }
-  }
-  #styleBuilderPanel.show { animation: slideBounceDown .68s cubic-bezier(.22,1.2,.36,1) forwards; }
-  #styleBuilderPanel.hide { animation: slideBounceUp .45s ease forwards; }
-  
-  .sb-head {
-    display:flex; align-items:center; justify-content: space-between;
-    padding: 12px 16px;
-    background: #0f1620;
-    border-bottom: 1px solid #26303a;
-  }
-  /* replace your current .sb-title block with this */
-.sb-title{
-    font-weight: 900;
-    letter-spacing: .2px;
-    font-size: clamp(16px, 2vw, 20px);
-    line-height: 1.1;
-    /* gradient ink */
-    background: linear-gradient(90deg,#7dd3fc 0%,#a78bfa 40%,#7dd3fc 80%);
-    -webkit-background-clip: text;
-            background-clip: text;
-    -webkit-text-fill-color: transparent;
-    /* subtle glow for dark bg */
-    text-shadow: 0 0 .5px rgba(125,211,252,.6);
-    position: relative;
-    padding-right: 6px; /* space before action buttons */
-  }
-  
-  /* thin accent bar under the title */
-  .sb-title::after{
-    content:"";
-    position:absolute;
-    left:0; bottom:-6px;
-    width: 56%;
-    height: 2px;
-    border-radius: 2px;
-    background: linear-gradient(90deg,rgba(125,211,252,.85),rgba(167,139,250,.35));
-    box-shadow: 0 0 10px rgba(125,211,252,.35);
-  }
-  
-  .sb-actions { display:flex; align-items:center; gap:10px; }
-  .sb-iconBtn, #saveCustomBtn {
-    width: 36px; height: 36px; display:grid; place-items:center;
-    border-radius: 10px; background:#121923; border:1px solid #303844; cursor:pointer;
-    position: relative;
-  }
-  .sb-iconBtn svg, #saveCustomBtn svg { width:18px; height:18px; fill:#c7cdd6; }
-  
-  #saveCustomBtn.liked svg path { fill:#e63946; stroke:#e63946; }
-  #saveCustomBtn svg path { fill: none; stroke: #c7cdd6; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: fill .2s ease, stroke .2s ease; }
-  #saveCustomBtn.liked::after {
-    content: "";
-    position: absolute;
-    inset: -6px;
-    border-radius: 12px;
-    pointer-events: none;
-    animation: burstRed .35s ease-out;
-  }
-  
-  /* Optional: allow re-bursting even when already liked */
-  #saveCustomBtn.burst::after {
-    content: "";
-    position: absolute;
-    inset: -6px;
-    border-radius: 12px;
-    pointer-events: none;
-    animation: burstRed .35s ease-out;
-  }
+  --bg: #0b0f14;
+  --pill: #2a2f36;
+  --pill-ring: #3a3f47;
+  --text: #e6edf3;
+  --muted: #9aa3ad;
+  --accent: #7dd3fc;
+  --glow: rgba(125, 211, 252, 0.4);
+  --success: #34d399;
+}
 
-  .sb-body {
-    display:grid; grid-template-columns: 1fr; gap:12px;
-    padding: 12px 16px 22px; overflow:auto;
-  }
-  @media(min-width: 900px){
-    .sb-body { grid-template-columns: 1.2fr 1fr; }
-  }
-  
-  .viewer {
-    background:#0f1620; border:1px solid #26303a; border-radius:14px; padding:14px;
-  }
-  .viewer h3 { margin:0 0 8px 0; font-size:14px; opacity:.9; }
-  #viewerOut {
-    min-height: 84px; border-radius:10px; border:1px dashed #303844; padding:12px;
-    display:flex; align-items:center; line-height:1.5; word-break:break-word;
-    background:#0c121a;
-  }
-  
-  .pickers { display:flex; flex-direction:column; gap:12px; }
-  .pickerGroup {
-    background:#0f1620; border:1px solid #26303a; border-radius:14px; padding:12px;
-  }
-  .pickerGroup h4 { margin:0 0 10px 0; font-size:13px; letter-spacing:.2px; opacity:.9; }
-  .pillRow { display:flex; flex-wrap:wrap; gap:8px; }
-  .pill {
-    padding:8px 12px; border-radius:999px; background:#242830; border:1px solid #3a3f47;
-    font-size:12px; cursor:pointer; user-select:none;
-  }
-  .pill.active { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(125,211,252,.18) inset; }
-  
-  .selectRow { display:flex; gap:8px; flex-wrap:wrap; }
-  select.sb-select {
-    background:#121923; color:var(--text); border:1px solid #303844; border-radius:10px; padding:8px 10px; font-size:13px;
-  }
-  
-  /* Button before mic (same style as .iconBtn) */
-  #customStyleBtn.iconBtn { order: 2; } /* ensure it’s just before mic; mic keeps its place */
-  
-  
-  /* ========== OVERRIDES & NEW ADDITIONS ========== */
-  
-  /* --- NEW: viewer becomes a single compact dashed box --- */
-  .viewer {
-    background: transparent !important;
-    border: 0 !important;
-    padding: 0 !important;
-  }
-  #viewerOut {
-    color: #fff;
-    line-height: 1.6;
-    min-height: 0 !important;
-    max-height: 10rem;
-    overflow: auto;
-    border-radius: 12px;
-    border: 1px dashed #303844;
-    padding: 12px 14px;
-    background: transparent !important;
-  }
-  
-  /* --- NEW: make builder pills text white --- */
-  #styleBuilderPanel .pill { color: #fff !important; }
-  #styleBuilderPanel .pill.active { color: #fff !important; }
-  
-  /* --- NEW: hide native select but keep accessible --- */
-  #baseStyleSelect {
-    position: absolute !important;
-    width: 1px; height: 1px; overflow: hidden;
-    clip: rect(0 0 0 0); white-space: nowrap; border: 0; padding: 0;
-  }
-  
-  /* --- NEW: horizontal live-preview strip for base styles --- */
-  /* REPLACE your current #baseStyleStrip block with this */
-#baseStyleStrip {
-  /* 3-row horizontally scrolling grid */
-  display: grid;
-  grid-auto-flow: column;                 /* fill by columns so rows stack */
-  grid-template-rows: repeat(3, minmax(0, 1fr));
-  grid-auto-columns: max-content;
-  gap: 10px 10px;
+html, body { height: 100%; }
+body {
+  margin: 0; height: 100vh; display: flex; flex-direction: column;
+  background: radial-gradient(1000px 700px at 80% -10%, #172133 0%, transparent 60%),
+              radial-gradient(800px 500px at -10% 10%, #162131 0%, transparent 60%),
+              var(--bg);
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+}
 
+/* --- floating blurred background shapes --- */
+.bgOrbs {
+  position: fixed;
+  inset: -10% -10% -10% -10%;
+  z-index: 0;
+  pointer-events: none;
+  filter: blur(52px) saturate(115%);
+  opacity: 0.9;
+}
+.bgOrbs .orb {
+  position: absolute;
+  border-radius: 40% 60% 60% 40% / 40% 35% 65% 60%;
+  will-change: transform;
+  mix-blend-mode: lighten;
+  background: radial-gradient(circle at 30% 30%, var(--c1), var(--c2) 60%, transparent 75%);
+  /* Faster, reliable motion */
+  animation: float var(--dur, 14s) ease-in-out infinite alternate both;
+  animation-delay: var(--delay, 0s);
+  transform-origin: center;
+  transform: translate3d(0,0,0) rotate(var(--rot, 0deg));
+  opacity: 0.85;
+}
+@keyframes float {
+  0%   { transform: translate3d(0, 0, 0) rotate(var(--rot, 0deg)); }
+  100% { transform: translate3d(var(--dx, 60px), var(--dy, -36px), 0) rotate(calc(var(--rot, 0deg) + 16deg)); }
+}
+
+/* individual orb settings + slight staggered delays (shorter durations + larger travel = more visible motion) */
+.bgOrbs .o1 { --size: 44vmin; width:var(--size); height:var(--size); top:-6vmin; left:-10vmin; --c1: rgba(125,211,252,.65); --c2: rgba(167,139,250,.35); --dx: 70px; --dy:-40px; --dur: 12s; --rot: 4deg;  --delay: 0s;   }
+.bgOrbs .o2 { --size: 36vmin; width:var(--size); height:var(--size); top:8vh; right:8vw;  --c1: rgba(167,139,250,.6);  --c2: rgba(125,211,252,.3); --dx:-65px; --dy:50px; --dur: 13s; --rot: -6deg; --delay: .25s; }
+.bgOrbs .o3 { --size: 30vmin; width:var(--size); height:var(--size); bottom:6vh; left:6vw; --c1: rgba(52,211,153,.55); --c2: rgba(125,211,252,.25); --dx: 55px; --dy:-44px; --dur: 14s; --rot: 8deg;  --delay: .5s; }
+.bgOrbs .o4 { --size: 28vmin; width:var(--size); height:var(--size); bottom:-8vmin; right:25vw; --c1: rgba(22,33,49,.9); --c2: rgba(23,33,51,.6); --dx:-50px; --dy:56px; --dur: 15s; --rot: 3deg;  --delay: .8s; }
+.bgOrbs .o5 { --size: 22vmin; width:var(--size); height:var(--size); top:20vh; left:35vw; --c1: rgba(125,211,252,.5); --c2: rgba(52,211,153,.25); --dx: 48px; --dy:36px; --dur: 11s; --rot: 10deg; --delay: .35s; }
+.bgOrbs .o6 { --size: 26vmin; width:var(--size); height:var(--size); bottom:20vh; right:6vw; --c1: rgba(167,139,250,.55); --c2: rgba(23,33,51,.4); --dx:-44px; --dy:-38px; --dur: 13s; --rot: -12deg; --delay: .15s; }
+.bgOrbs .o7 { --size: 18vmin; width:var(--size); height:var(--size); top:40vh; left:8vw; --c1: rgba(23,33,51,.7); --c2: rgba(125,211,252,.25); --dx: 36px; --dy:-32px; --dur: 10s; --rot: 6deg;  --delay: .6s; }
+.bgOrbs .o8 { --size: 20vmin; width:var(--size); height:var(--size); top:6vh; right:40vw; --c1: rgba(52,211,153,.45); --c2: rgba(167,139,250,.25); --dx: -34px; --dy:28px; --dur: 12.5s; --rot: -8deg; --delay: .2s; }
+
+/* Respect users who reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .bgOrbs .orb { animation: none; }
+}
+
+/* SINGLE blurred container for header + chips */
+header {
+  position: fixed;
+  left: 0; right: 0; top: 0;
+  z-index: 150;
+  padding: 16px 20px 10px;
+  display:flex; flex-direction: column; align-items:center; gap:10px;
+  background: transparent;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  -webkit-mask-image: linear-gradient(to bottom,
+    rgba(0,0,0,1) 0%,
+    rgba(0,0,0,0.95) 76%,
+    rgba(0,0,0,0) 100%);
+  mask-image: linear-gradient(to bottom,
+    rgba(0,0,0,1) 0%,
+    rgba(0,0,0,0.95) 76%,
+    rgba(0,0,0,0) 100%);
+}
+header.scrolled {
+  background: rgba(11,15,20,0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.logo { width:45px; height:45px; border-radius:10px; }
+h1 { font-size: 18px; margin:0; font-weight: 800; letter-spacing:.2px; opacity: 1; text-align:center; transition: opacity .2s ease; }
+header.scrolled h1 { opacity: 1; }
+
+/* Push content below the taller fixed header (title + chips) */
+.content { flex:1; min-height: 0; overflow: visible; padding: 140px 16px 200px; }
+
+/* CHIP BAR: single row, scrollable, full-width on all screens */
+.chipBar {
+  align-self: stretch;
   width: 100%;
-  padding: 10px 2px 4px;
-  overflow-x: auto;                        /* horizontal scroll */
-  overflow-y: hidden;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 8px;
+  align-items: center;
+  overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  padding: 6px 20px 8px;
+  margin: 0;
+  scrollbar-width: thin;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+.chipBar.scrolled { background: transparent; }
+
+.chipBar::-webkit-scrollbar { height: 6px; }
+.chipBar::-webkit-scrollbar-thumb { background: rgba(255,255,255,.08); border-radius: 999px; }
+
+.chip {
+  flex: 0 0 auto;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.4);
+  color: #0a0f14;
+  mix-blend-mode: normal;
+  border: 1px solid rgba(255,255,255,0.55);
+  font-size: 13px; font-weight: 700; letter-spacing:.2px;
+  cursor: pointer; user-select: none;
+  transition: transform .06s ease, box-shadow .2s ease, background .2s ease, filter .2s ease;
+  white-space: nowrap;
+  position: relative;
+}
+.chip:hover { transform: translateY(-1px); box-shadow: 0 0 0 2px rgba(125,211,252,.45) inset, 0 0 12px var(--glow); }
+.chip:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--accent), 0 0 14px var(--glow); }
+.chip:active { transform: translateY(1px) scale(.98); }
+.chip.active { box-shadow: 0 0 0 2px rgba(125,211,252,.45) inset, 0 0 18px var(--glow); }
+
+/* click pulse */
+.chip.pulse::after {
+  content:""; position:absolute; inset:-3px; border-radius:999px; pointer-events:none;
+  animation: chipFlash .35s ease-out;
+}
+@keyframes chipFlash {
+  0%{ box-shadow:0 0 0 0 rgba(125,211,252,.45);}
+  100%{ box-shadow:0 0 0 14px rgba(125,211,252,0);}
+}
+
+.stylesList { display:grid; grid-template-columns: 1fr; gap: 10px; margin-top: 16px; }
+@media(min-width: 700px){ .stylesList { grid-template-columns: 1fr 1fr; } }
+@media(min-width: 1024px){ .stylesList { grid-template-columns: 1fr 1fr 1fr; } }
+
+.card { background: #0f1620; border:1px solid #26303a; border-radius: 12px; padding: 12px; position:relative; overflow:hidden; }
+.cardHead { display:flex; align-items:center; justify-content: space-between; gap:10px; position: relative; }
+.styleName { font-weight:700; }
+.outText { margin-top:6px; line-height:1.5; word-break: break-word; font-size: 16px; }
+
+/* Copy icon button */
+.copyBtn { position: relative; width: 36px; height: 36px; border-radius: 10px; display:grid; place-items:center; background:#121923; border:1px solid #303844; cursor:pointer; transition: transform .08s ease, border-color .2s ease, background .2s ease; overflow:visible; z-index: 2; }
+.copyBtn:hover { border-color: var(--accent); background:#0f1823; }
+.copyBtn:active { transform: translateY(1px) scale(0.98); }
+.copyBtn svg { width:18px; height:18px; fill:#c7cdd6; opacity:.95; transition: transform .2s ease, opacity .2s ease; }
+.copyBtn .check { display:none; }
+.copyBtn.copied { border-color: var(--success); background:#0f1e18; }
+.copyBtn.copied .clip { display:none; }
+.copyBtn.copied .check { display:block; fill: var(--success); }
+.copyBtn.copied::after { content:""; position:absolute; inset:-6px; border-radius:12px; pointer-events:none; animation: burst .35s ease-out; }
+@keyframes burst { 0%{ box-shadow:0 0 0 0 rgba(52,211,153,.45);} 100%{ box-shadow:0 0 0 16px rgba(52,211,153,0);} }
+
+/* Like button */
+.likeBtn {
+  position: absolute;
+  top: 8px;
+  right: 48px;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: #121923;
+  border: 1px solid #303844;
+  cursor: pointer;
+  transition: transform .08s ease, border-color .2s ease, background .2s ease;
+  overflow: visible;
+  z-index: 2;
+}
+.likeBtn:hover { border-color: var(--accent); background:#0f1823; }
+.likeBtn:active { transform: translateY(1px) scale(0.98); }
+.likeBtn svg { width:18px; height:18px; }
+.likeBtn svg path { fill: none; stroke: #c7cdd6; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: fill .2s ease, stroke .2s ease; }
+.likeBtn.liked svg path { fill: #e63946; stroke: #e63946; }
+.likeBtn.liked::after { content:""; position:absolute; inset:-6px; border-radius:12px; pointer-events:none; animation: burstRed .35s ease-out; }
+@keyframes burstRed { 0%{ box-shadow:0 0 0 0 rgba(230,57,70,.45);} 100%{ box-shadow:0 0 0 16px rgba(230,57,70,0);} }
+
+.dockWrap {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 200;
+  padding: 10px 0 20px;
+  display: flex;
+  justify-content: center;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+.bottomBlur {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  height: 35px;
+  z-index: 180;
+  pointer-events: none;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
+  mask-image: linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
+  background: transparent;
+}
+.bottomBlur.scrolled {
+  background: linear-gradient(
+    to top,
+    rgba(11,15,20,0.85) 0%,
+    rgba(11,15,20,0.65) 60%,
+    rgba(11,15,20,0) 100%
+  );
+}
+.dockWrap.scrolled {
+  background: linear-gradient(to top,
+    rgba(11,15,20,0.85) 0%,
+    rgba(11,15,20,0.65) 60%,
+    rgba(11,15,20,0) 100%);
+}
+.dock {
+  pointer-events: auto;
+  width: 64%; max-width: 720px;
+  display:flex; align-items:center; gap: 10px;
+  background: var(--pill);
+  border: 1px solid var(--pill-ring);
+  border-radius: 999px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
+  padding: 0 14px; height: 56px;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.dock { width: 64%; max-width: 720px; display:flex; align-items:center; gap: 10px; background: var(--pill); border: 1px solid var(--pill-ring); border-radius: 999px; box-shadow: inset 0 1px 0 rgba(255,255,255,.05); padding: 0 14px; height: 56px; transition: box-shadow 0.2s ease, border-color 0.2s ease; overflow: hidden;}
+.dock:focus-within { border-color: var(--accent); box-shadow: 0 0 8px var(--glow); }
+
+.dock input { flex:1; background: transparent; border:0; outline:none; color:var(--text); font-size: 17px; line-height: 56px; min-width: 0;   /* critical on mobile */
+  flex: 1 1 auto; }
+.dock input::placeholder { color: var(--muted); opacity:.95; }
+
+.iconBtn { position: relative; width: 40px; height: 40px; border-radius: 999px; display:grid; place-items:center; background: #242830; border: 1px solid #3a3f47; cursor: pointer; flex-shrink: 0; }
+.iconBtn svg { width:22px; height:22px; fill:#c7cdd6; opacity:.9; }
+
+.iconBtn.listening::before {
+  content: ""; position:absolute; inset:-5px; border-radius:999px; padding:3px;
+  background:
+    conic-gradient(var(--accent) 0deg 20deg, transparent 20deg 40deg,
+                   var(--accent) 40deg 60deg, transparent 60deg 80deg,
+                   var(--accent) 80deg 100deg, transparent 100deg 120deg,
+                   var(--accent) 120deg 140deg, transparent 140deg 160deg,
+                   var(--accent) 160deg 180deg, transparent 180deg 200deg,
+                   var(--accent) 200deg 220deg, transparent 220deg 240deg,
+                   var(--accent) 240deg 260deg, transparent 260deg 280deg,
+                   var(--accent) 280deg 300deg, transparent 300deg 320deg,
+                   var(--accent) 320deg 340deg, transparent 340deg 360deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  animation: spin 2.5s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.dock.listening { box-shadow: 0 0 10px var(--glow), inset 0 1px 0 rgba(255,255,255,.05); }
+.cardHead { display: none !important; }
+.styleName { display: none !important; }
+.copyBtn.topRight { position: absolute; top: 8px; right: 8px; }
+
+.stylesList { padding-bottom: 1x; }
+#sentinel { height: 120px !important; }
+
+/* === Custom Style Builder (dialog) === */
+#styleBuilderOverlay {
+  position: fixed;
+  inset: 0 0 80px 0; /* leave space for dock at bottom so input stays visible */
+  /* bottom set via JS to match dock height for consistency across breakpoints */
+  z-index: 190; /* under the dock (dock z-index is 200) */
+  display: none;
+  pointer-events: none;
+}
+
+/* Overlay: stays hidden until opened, then can receive clicks */
+#styleBuilderOverlay {
+  position: fixed;
+  inset: 0 0 80px 0;  /* JS already adjusts bottom to dock height */
+  z-index: 190;
+  display: none;
+  pointer-events: none;
+}
+#styleBuilderOverlay.open {
+  display: block;
+  pointer-events: auto;
+}
+
+/* Panel starts off-screen using transform (not top) */
+#styleBuilderPanel {
+  position: absolute;
+  left: 0; right: 0; top: 0;
+  height: 100%;
+  background: rgba(13,18,26,0.98);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid #26303a;
+  box-shadow: 0 16px 40px rgba(0,0,0,.55);
+  border-radius: 0 0 18px 18px;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  overflow: hidden;
+
+  /* key: start hidden above the viewport */
+  transform: translateY(-100%);
+  will-change: transform;
+}
+/* Bounce in/out only via transform */
+@keyframes slideBounceDown {
+  0%   { transform: translateY(-100%); }
+  60%  { transform: translateY(12%); }
+  80%  { transform: translateY(-6%); }
+  100% { transform: translateY(0%); }
+}
+@keyframes slideBounceUp {
+  0%   { transform: translateY(0%); }
+  40%  { transform: translateY(-6%); }
+  100% { transform: translateY(-100%); }
+}
+#styleBuilderPanel.show { animation: slideBounceDown .68s cubic-bezier(.22,1.2,.36,1) forwards; }
+#styleBuilderPanel.hide { animation: slideBounceUp .45s ease forwards; }
+
+.sb-head {
+  display:flex; align-items:center; justify-content: space-between;
+  padding: 12px 16px;
+  background: #0f1620;
+  border-bottom: 1px solid #26303a;
+}
+/* replace your current .sb-title block with this */
+.sb-title{
+  font-weight: 900;
+  letter-spacing: .2px;
+  font-size: clamp(16px, 2vw, 20px);
+  line-height: 1.1;
+  /* gradient ink */
+  background: linear-gradient(90deg,#7dd3fc 0%,#a78bfa 40%,#7dd3fc 80%);
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+  /* subtle glow for dark bg */
+  text-shadow: 0 0 .5px rgba(125,211,252,.6);
+  position: relative;
+  padding-right: 6px; /* space before action buttons */
+}
+
+/* thin accent bar under the title */
+.sb-title::after{
+  content:"";
+  position:absolute;
+  left:0; bottom:-6px;
+  width: 56%;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg,rgba(125,211,252,.85),rgba(167,139,250,.35));
+  box-shadow: 0 0 10px rgba(125,211,252,.35);
+}
+
+.sb-actions { display:flex; align-items:center; gap:10px; }
+.sb-iconBtn, #saveCustomBtn {
+  width: 36px; height: 36px; display:grid; place-items:center;
+  border-radius: 10px; background:#121923; border:1px solid #303844; cursor:pointer;
+  position: relative;
+}
+.sb-iconBtn svg, #saveCustomBtn svg { width:18px; height:18px; fill:#c7cdd6; }
+
+#saveCustomBtn.liked svg path { fill:#e63946; stroke:#e63946; }
+#saveCustomBtn svg path { fill: none; stroke: #c7cdd6; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: fill .2s ease, stroke .2s ease; }
+#saveCustomBtn.liked::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 12px;
+  pointer-events: none;
+  animation: burstRed .35s ease-out;
+}
+
+/* Optional: allow re-bursting even when already liked */
+#saveCustomBtn.burst::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 12px;
+  pointer-events: none;
+  animation: burstRed .35s ease-out;
+}
+
+.sb-body {
+  display:grid; grid-template-columns: 1fr; gap:12px;
+  padding: 12px 16px 22px; overflow:auto;
+}
+@media(min-width: 900px){
+  .sb-body { grid-template-columns: 1.2fr 1fr; }
+}
+
+.viewer {
+  background:#0f1620; border:1px solid #26303a; border-radius:14px; padding:14px;
+}
+.viewer h3 { margin:0 0 8px 0; font-size:14px; opacity:.9; }
+#viewerOut {
+  min-height: 84px; border-radius:10px; border:1px dashed #303844; padding:12px;
+  display:flex; align-items:center; line-height:1.5; word-break:break-word;
+  background:#0c121a;
+}
+
+.pickers { display:flex; flex-direction:column; gap:12px; }
+.pickerGroup {
+  background:#0f1620; border:1px solid #26303a; border-radius:14px; padding:12px;
+}
+.pickerGroup h4 { margin:0 0 10px 0; font-size:13px; letter-spacing:.2px; opacity:.9; }
+.pillRow { display:flex; flex-wrap:wrap; gap:8px; }
+.pill {
+  padding:8px 12px; border-radius:999px; background:#242830; border:1px solid #3a3f47;
+  font-size:12px; cursor:pointer; user-select:none;
+}
+.pill.active { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(125,211,252,.18) inset; }
+
+.selectRow { display:flex; gap:8px; flex-wrap:wrap; }
+select.sb-select {
+  background:#121923; color:var(--text); border:1px solid #303844; border-radius:10px; padding:8px 10px; font-size:13px;
+}
+
+/* Button before mic (same style as .iconBtn) */
+#customStyleBtn.iconBtn { order: 2; } /* ensure it’s just before mic; mic keeps its place */
+
+
+/* ========== OVERRIDES & NEW ADDITIONS ========== */
+
+/* --- NEW: viewer becomes a single compact dashed box --- */
+.viewer {
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0 !important;
+}
+#viewerOut {
+  color: #fff;
+  line-height: 1.6;
+  min-height: 0 !important;
+  max-height: 10rem;
+  overflow: auto;
+  border-radius: 12px;
+  border: 1px dashed #303844;
+  padding: 12px 14px;
+  background: transparent !important;
+}
+
+/* --- NEW: make builder pills text white --- */
+#styleBuilderPanel .pill { color: #fff !important; }
+#styleBuilderPanel .pill.active { color: #fff !important; }
+
+/* --- NEW: hide native select but keep accessible --- */
+#baseStyleSelect {
+  position: absolute !important;
+  width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap; border: 0; padding: 0;
+}
+
+/* --- NEW: horizontal live-preview strip for base styles --- */
+/* REPLACE your current #baseStyleStrip block with this */
+#baseStyleStrip {
+/* 3-row horizontally scrolling grid */
+display: grid;
+grid-auto-flow: column;                 /* fill by columns so rows stack */
+grid-template-rows: repeat(3, minmax(0, 1fr));
+grid-auto-columns: max-content;
+gap: 10px 10px;
+
+width: 100%;
+padding: 10px 2px 4px;
+overflow-x: auto;                        /* horizontal scroll */
+overflow-y: hidden;
+-webkit-overflow-scrolling: touch;
 }
 
 #baseStyleStrip .baseCard {
-  color: #fff;
-  background: #171c22;
-  border: 1px solid #2a313a;
-  border-radius: 12px;
-  padding: 10px 12px;
-  white-space: nowrap;
-  cursor: pointer;
-  width: max-content;                      /* keep cards compact */
-  height: max-content;
-  align-self: start;                       /* avoid stretch across rows */
+color: #fff;
+background: #171c22;
+border: 1px solid #2a313a;
+border-radius: 12px;
+padding: 10px 12px;
+white-space: nowrap;
+cursor: pointer;
+width: max-content;                      /* keep cards compact */
+height: max-content;
+align-self: start;                       /* avoid stretch across rows */
 }
 
 #baseStyleStrip .baseCard.active {
-  background: #242b35;
-  border-color: #3b4350;
+background: #242b35;
+border-color: #3b4350;
 }
 
-  
-  /* --- NEW: wrapper variants column scrolls vertically --- */
-  #wrapperVariants {
-    max-height: 220px;
-    overflow-y: auto;
-    padding-right: 4px;
-  }
 
-  /* =========================
-   Fix overflow: let cards shrink so they can scroll
-   ========================= */
+/* --- NEW: wrapper variants column scrolls vertically --- */
+#wrapperVariants {
+  max-height: 220px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+/* =========================
+ Fix overflow: let cards shrink so they can scroll
+ ========================= */
 
 /* 0) Never let ancestor containers block the scrollers */
 #styleBuilderPanel .sb-body,
 #styleBuilderPanel .pickers,
 #styleBuilderPanel .pickerGroup,
 #styleBuilderPanel .selectRow {
-  min-height: 0 !important;
-  min-width: 0 !important;   /* critical for horizontal scrollers inside flex rows */
+min-height: 0 !important;
+min-width: 0 !important;   /* critical for horizontal scrollers inside flex rows */
 }
 
 /* 1) Base font style strip — ensure it can shrink and scroll horizontally */
 #styleBuilderPanel #baseStyleStrip {
-  width: 100% !important;
-  max-width: 100% !important;
-  min-width: 0 !important;
-  overflow-x: auto !important;    /* already set before; enforce here */
-  overflow-y: hidden !important;
-  -webkit-overflow-scrolling: touch !important;
-  touch-action: pan-x !important;
+width: 100% !important;
+max-width: 100% !important;
+min-width: 0 !important;
+overflow-x: auto !important;    /* already set before; enforce here */
+overflow-y: hidden !important;
+-webkit-overflow-scrolling: touch !important;
+touch-action: pan-x !important;
 }
 
 /* 2) Decorative wrapper categories — same idea: shrink + scroll X */
 /* --- FIX: keep Emoji Category pills on one line with horizontal scroll --- */
 #styleBuilderPanel #wrapperCats {
-    display: flex !important;
-    flex-wrap: nowrap !important;   /* don't let it grow downward */
-    overflow-x: auto !important;     /* scroll sideways when too many items */
-    overflow-y: hidden !important;
-    -webkit-overflow-scrolling: touch !important;
-    gap: 8px;                         /* preserve your spacing */
-    min-width: 0 !important;          /* allow shrinking inside flex parents */
-    scrollbar-gutter: stable both-edges; /* avoid layout shift when scrollbar appears */
-  }
-  
-  /* Ensure each pill stays compact and doesn't stretch the row */
-  #styleBuilderPanel #wrapperCats .pill {
-    flex: 0 0 auto !important;       /* keep each pill's width to its content */
-    white-space: nowrap !important;  /* no wrapping inside pills (emojis/text) */
-    line-height: 1.2;                /* tame occasional tall emoji fonts */
-  }
-  
+  display: flex !important;
+  flex-wrap: nowrap !important;   /* don't let it grow downward */
+  overflow-x: auto !important;     /* scroll sideways when too many items */
+  overflow-y: hidden !important;
+  -webkit-overflow-scrolling: touch !important;
+  gap: 8px;                         /* preserve your spacing */
+  min-width: 0 !important;          /* allow shrinking inside flex parents */
+  scrollbar-gutter: stable both-edges; /* avoid layout shift when scrollbar appears */
+}
+
+/* Ensure each pill stays compact and doesn't stretch the row */
+#styleBuilderPanel #wrapperCats .pill {
+  flex: 0 0 auto !important;       /* keep each pill's width to its content */
+  white-space: nowrap !important;  /* no wrapping inside pills (emojis/text) */
+  line-height: 1.2;                /* tame occasional tall emoji fonts */
+}
+
 
 /* 3) Wrapper variants — fill leftover height and scroll Y */
 #styleBuilderPanel .pickerGroup:has(#wrapperCats) {
-    overflow: hidden;              /* contain children properly */
-    min-width: 0 !important;       /* allow flex shrink inside panel */
-  }
+  overflow: hidden;              /* contain children properly */
+  min-width: 0 !important;       /* allow flex shrink inside panel */
+}
+
+#styleBuilderPanel #wrapperCats {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;   /* force single line */
+  gap: 8px;
   
-  #styleBuilderPanel #wrapperCats {
-    display: flex !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;   /* force single line */
-    gap: 8px;
-    
-    overflow-x: auto !important;    /* scroll horizontally */
-    overflow-y: hidden !important;
-    -webkit-overflow-scrolling: touch !important;
-    touch-action: pan-x !important;
-  
-    min-width: 0 !important;
-    max-width: 100% !important;
-    scrollbar-gutter: stable both-edges;
-  }
-  
-  #styleBuilderPanel #wrapperCats .pill {
-    flex: 0 0 auto !important;      /* don’t stretch */
-    white-space: nowrap !important; /* keep emoji + text together */
-    line-height: 1.2;
-  }
+  overflow-x: auto !important;    /* scroll horizontally */
+  overflow-y: hidden !important;
+  -webkit-overflow-scrolling: touch !important;
+  touch-action: pan-x !important;
+
+  min-width: 0 !important;
+  max-width: 100% !important;
+  scrollbar-gutter: stable both-edges;
+}
+
+#styleBuilderPanel #wrapperCats .pill {
+  flex: 0 0 auto !important;      /* don’t stretch */
+  white-space: nowrap !important; /* keep emoji + text together */
+  line-height: 1.2;
+}
 
 /* Optional: keep layout stable when scrollbars appear */
 #styleBuilderPanel #baseStyleStrip,
 #styleBuilderPanel #wrapperCats,
 #styleBuilderPanel #wrapperVariants {
-  scrollbar-gutter: stable both-edges;
+scrollbar-gutter: stable both-edges;
 }
 
 #closeStyleBuilder {
-    color: #fff; /* drives fill=currentColor inside the SVG */
-  }
-  
-  #closeStyleBuilder svg {
-    fill: currentColor !important; /* override the generic gray fill */
-  }
-  
-  /* (optional) keep it white on hover/focus */
-  #closeStyleBuilder:hover,
-  #closeStyleBuilder:focus-visible {
-    color: #fff;
-    border-color: #fff;
-  }
+  color: #fff; /* drives fill=currentColor inside the SVG */
+}
 
-  :root{
-    --pink:#ff3d9a;
-    --pink-glow: rgba(255,61,154,.42);
-  }
-  
-  /* Pink pulse state */
-  #customStyleBtn.pulsing{
-    /* subtle inner highlight + outer glow */
-    box-shadow:
-      inset 0 0 0 2px rgba(255,61,154,.22),
-      0 0 18px var(--pink-glow);
-    animation: breathePink 2.2s ease-in-out infinite;
-  }
-  
-  /* expanding ring */
+#closeStyleBuilder svg {
+  fill: currentColor !important; /* override the generic gray fill */
+}
+
+/* (optional) keep it white on hover/focus */
+#closeStyleBuilder:hover,
+#closeStyleBuilder:focus-visible {
+  color: #fff;
+  border-color: #fff;
+}
+
+:root{
+  --pink:#ff3d9a;
+  --pink-glow: rgba(255,61,154,.42);
+}
+
+/* Pink pulse state */
+#customStyleBtn.pulsing{
+  /* subtle inner highlight + outer glow */
+  box-shadow:
+    inset 0 0 0 2px rgba(255,61,154,.22),
+    0 0 18px var(--pink-glow);
+  animation: breathePink 2.2s ease-in-out infinite;
+}
+
+/* expanding ring */
+#customStyleBtn.pulsing::after{
+  content:"";
+  position:absolute;
+  inset:-6px;
+  border-radius:999px;
+  pointer-events:none;
+  box-shadow:0 0 0 0 var(--pink-glow);
+  animation: ringPink 1.6s ease-out infinite;
+}
+
+/* keyframes */
+@keyframes breathePink{
+  0%,100%{ transform: scale(1); }
+  50%{ transform: scale(1.04); }
+}
+@keyframes ringPink{
+  0%{   box-shadow:0 0 0 0   var(--pink-glow); }
+  70%{  box-shadow:0 0 0 14px rgba(255,61,154,0); }
+  100%{ box-shadow:0 0 0 0   rgba(255,61,154,0); }
+}
+
+/* motion respect */
+@media (prefers-reduced-motion: reduce){
+  #customStyleBtn.pulsing,
   #customStyleBtn.pulsing::after{
-    content:"";
-    position:absolute;
-    inset:-6px;
-    border-radius:999px;
-    pointer-events:none;
-    box-shadow:0 0 0 0 var(--pink-glow);
-    animation: ringPink 1.6s ease-out infinite;
+    animation: none !important;
+    box-shadow: none !important;
   }
-  
-  /* keyframes */
-  @keyframes breathePink{
-    0%,100%{ transform: scale(1); }
-    50%{ transform: scale(1.04); }
-  }
-  @keyframes ringPink{
-    0%{   box-shadow:0 0 0 0   var(--pink-glow); }
-    70%{  box-shadow:0 0 0 14px rgba(255,61,154,0); }
-    100%{ box-shadow:0 0 0 0   rgba(255,61,154,0); }
-  }
-  
-  /* motion respect */
-  @media (prefers-reduced-motion: reduce){
-    #customStyleBtn.pulsing,
-    #customStyleBtn.pulsing::after{
-      animation: none !important;
-      box-shadow: none !important;
-    }
-  }
-  
+}
 
 
-  
+/* ===== Universal mobile card overflow fix (applies to ALL cards) ===== */
+
+/* Clip contents to rounded corners and allow shrinking */
+#styleBuilderPanel .viewer,
+#styleBuilderPanel .pickerGroup,
+#styleBuilderPanel .card {
+overflow: hidden !important;
+min-width: 0 !important;
+}
+
+/* Any flex rows inside cards can shrink without forcing overflow */
+#styleBuilderPanel .pillRow,
+#styleBuilderPanel .selectRow {
+min-width: 0 !important;
+}
+
+/* Default pills wrap safely inside cards (long emoji/kaomoji won’t push out) */
+#styleBuilderPanel .pill {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+max-width: 100%;
+min-width: 0;
+white-space: normal;      /* allow wrapping */
+word-break: break-word;   /* break long sequences */
+text-align: center;
+}
+
+/* Keep the “Wrapper variants” card tidy and scrollable vertically when tall */
+#styleBuilderPanel #wrapperVariants {
+display: flex;
+flex-wrap: wrap;
+gap: 8px;
+max-height: 220px;
+overflow: auto;
+padding-right: 4px;
+}
+
+/* Exception preserved: categories stay a single horizontal scroller */
+#styleBuilderPanel #wrapperCats .pill {
+white-space: nowrap !important;
+}
